@@ -9,7 +9,7 @@ Authentication==>
 
 post==>
 
-->create,
+->create,{caption:String,img_url:String,user:UserId,createdAt:Date-time}
 ->can see the feed,
 ->like posts,(collection types)
 ->save post
