@@ -1,28 +1,29 @@
-import React, { useState } from 'react'
-import "../style/form.scss"
-import { Link } from 'react-router-dom'
-import axios from 'axios'
+import React, { useState } from "react";
+import "../style/form.scss";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth.jsx";
 
 const Login = () => {
+  const [username, setusername] = useState("");
+  const [password, setpassword] = useState("");
 
-  const [username, setusername] = useState("")
-  const [password, setpassword] = useState("")  
+  const { handleLogin, loading } = useAuth(); // ✅ FIXED
+  const navigate = useNavigate();
 
-  function handlesubmit(e) {
-    e.preventDefault()
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
-    axios.post("http://localhost:3000/api/auth/login", {
-      username,
-      password,
-    }, {
-      withCredentials: true
-    })
-    .then((res) => {
-      console.log(res.data)
-    })
-    .catch((err) => {
-      console.log(err.response?.data)
-    })
+  async function handlesubmit(e) {
+    e.preventDefault();
+
+    try {
+      const res = await handleLogin(username, password);
+      console.log(res);
+      navigate("/");
+    } catch (err) {
+      console.log(err.response?.data);
+    }
   }
 
   return (
@@ -31,37 +32,32 @@ const Login = () => {
         <h1>Login</h1>
 
         <form onSubmit={handlesubmit}>
-
-          <input 
-            onChange={(e)=> setusername(e.target.value)}
-            type="text" 
+          <input
+            onChange={(e) => setusername(e.target.value)}
+            type="text"
             name="username"
             placeholder="Enter username"
           />
 
           <input
-            onChange={(e)=> setpassword(e.target.value)}
-            type="password" 
-            name="password" 
+            onChange={(e) => setpassword(e.target.value)}
+            type="password"
+            name="password"
             placeholder="Enter password"
           />
 
           <button type="submit">Login</button>
-
         </form>
 
         <p>
-          Don't have an account? 
+          Don't have an account?
           <Link className="toggleAuthForm" to="/register">
             Register
           </Link>
         </p>
-
       </div>
     </main>
-  )
-}
+  );
+};
 
-export default Login
-
-
+export default Login;
